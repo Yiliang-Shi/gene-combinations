@@ -31,18 +31,20 @@ function init(){
     let possibilities = new Set();
     for(let a of leftVal){
       for(let b of rightVal){
-        output = [];
-        for(let elementA of a){
-          for(let elementB of b){
-            if(elementA.toString()> elementB.toString()){
-              output.push(elementA.toString()+", "+elementB.toString())
+        let permutationB = permute(b);
+        for(let elementB of permutationB){
+          output = [];
+          for(let idx =0; idx<elementB.length;idx++){
+            if(a[idx].toString()> elementB[idx].toString()){
+              output.push(a[idx].toString()+", "+elementB[idx].toString())
             }else{
-              output.push(elementB.toString()+", "+elementA.toString())
+              output.push(elementB[idx].toString()+", "+a[idx].toString())
             }
           }
+          output.sort();
+          possibilities.add(output.join('; '));
         }
-        output.sort();
-        possibilities.add(output.join('; '));
+
       }
     }
     // display.selectAll("*").remove();
@@ -68,6 +70,31 @@ function init(){
     display = newLists.merge(display);
 display.text(d=>d)
   }
+
+  function permute(permutation) {
+  var length = permutation.length,
+      result = [permutation.slice()],
+      c = new Array(length).fill(0),
+      i = 1, k, p;
+
+  while (i < length) {
+    if (c[i] < i) {
+      k = i % 2 && c[i];
+      p = permutation[i];
+      permutation[i] = permutation[k];
+      permutation[k] = p;
+      ++c[i];
+      i = 1;
+      result.push(permutation.slice());
+    } else {
+      c[i] = 0;
+      ++i;
+    }
+  }
+  return result;
+}
+
+console.log(permute([1, 2, 3]));
 
   function combinations(arr, k){
       var i,
