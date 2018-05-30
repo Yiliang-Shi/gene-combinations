@@ -25,6 +25,37 @@ function init(){
       .nodes().map(d => d.value);
     let rightVal = d3.select('.chromosomes-input-right').selectAll('input')
     .nodes().map(d => d.value);
+    let g1 = combine([leftVal[0], leftVal[3]], [rightVal[0], rightVal[3]]);
+    let g2 = combine([leftVal[1], leftVal[4]], [rightVal[1], rightVal[4]]);
+    let g3 = combine([leftVal[2], leftVal[5]], [rightVal[2], rightVal[5]]);
+    let possibilities = new Set();
+    for(let a of g1){
+      for(let b of g2){
+        for(let c of g3){
+            output = [];
+            a.sort();
+            b.sort();
+            c.sort();
+            output.push(a.join(', '));
+            output.push(b.join(', '));
+            output.push(c.join(', '));
+            output.sort();
+            possibilities.add(output.join('; '));
+
+        }
+      }
+    }
+    let newLists = display.data([...possibilities]).enter().append("li");
+    display.exit().remove();
+    display = newLists.merge(display);
+    display.text(d=>d)
+  }
+
+  function calculate_and_display_old(){
+    let leftVal = d3.select('.chromosomes-input-left').selectAll('input')
+      .nodes().map(d => d.value);
+    let rightVal = d3.select('.chromosomes-input-right').selectAll('input')
+    .nodes().map(d => d.value);
     leftVal = combinations(leftVal, 3);
     rightVal = combinations(rightVal, 3);
 
@@ -70,6 +101,21 @@ function init(){
     display = newLists.merge(display);
 display.text(d=>d)
   }
+
+  function combine(arr1, arr2){
+    let permutationB = permute(arr2);
+    output = [];
+    for(let elementB of permutationB){
+      for(let idx =0; idx<elementB.length;idx++){
+        if(arr1[idx].toString()> elementB[idx].toString()){
+          output.push([arr1[idx],elementB[idx]])
+        }else{
+          output.push([elementB[idx],arr1[idx]])
+        }
+      }
+  }
+  return output;
+}
 
   function permute(permutation) {
   var length = permutation.length,
